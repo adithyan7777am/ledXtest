@@ -116,6 +116,7 @@ const redirects = [
 
 await out('_redirects', `# Netlify — 301s from the old Leaf Digital Academy URL structure\n${redirects.map(([f, t]) => `${f}  ${t}  301`).join('\n')}\n`);
 await out('vercel.json', JSON.stringify({
+  outputDirectory: '.',
   cleanUrls: false,
   trailingSlash: true,
   redirects: redirects.filter(([f]) => f.endsWith('/')).map(([source, destination]) => ({ source, destination, permanent: true })),
