@@ -1,0 +1,29 @@
+# cPanel / Apache — 301s from the old URL structure
+Options -Indexes
+DirectoryIndex index.html
+RewriteEngine On
+# Brochure gate: private files (PDFs, signing key, lead log) and build tools must never be served directly
+RewriteRule ^(private|tools)(/|$) - [F,L]
+RewriteRule ^ai-integrated-digital-marketing-program/?$ /programs/ai-integrated-digital-marketing-program/ [R=301,L]
+RewriteRule ^advanced-certificate-in-seo-strategy-execution/?$ /programs/advanced-certificate-in-seo-strategy-execution/ [R=301,L]
+RewriteRule ^wordpress-development-certificate-program/?$ /programs/wordpress-development-certificate-program/ [R=301,L]
+RewriteRule ^leaf-digital-academy-digital-marketing-skills/?$ /blog/leaf-digital-academy-digital-marketing-skills/ [R=301,L]
+RewriteRule ^digital-marketing-easy-for-beginners/?$ /blog/digital-marketing-easy-for-beginners/ [R=301,L]
+RewriteRule ^qualifications-for-digital-marketing/?$ /blog/qualifications-for-digital-marketing/ [R=301,L]
+RewriteRule ^digital-marketing-tools-for-beginners-2/?$ /blog/career-opportunities-after-digital-marketing-course/ [R=301,L]
+RewriteRule ^digital-marketing-tools-for-beginners/?$ /blog/digital-marketing-tools-for-beginners/ [R=301,L]
+RewriteRule ^courses-after-pu-to-start-earning-early/?$ /blog/courses-after-pu-to-start-earning-early/ [R=301,L]
+RewriteRule ^why-digital-marketing-is-best-career-2026/?$ /blog/why-digital-marketing-is-best-career-2026/ [R=301,L]
+RewriteRule ^high-income-skills-after-pu/?$ /blog/high-income-skills-after-pu/ [R=301,L]
+RewriteRule ^traditional-degree-skill-course-mangalore/?$ /blog/traditional-degree-skill-course-mangalore/ [R=301,L]
+
+# If the domain changes, put this on the OLD domain's hosting instead:
+# RewriteCond %{HTTP_HOST} ^(www\.)?leafdigitalacademy\.com$ [NC]
+# RewriteRule ^(.*)$ https://ledxdigitalacademy.com/$1 [R=301,L]
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>

@@ -1,0 +1,2 @@
+# Only the brochure endpoint is public; keep the directory un-listable.
+Options -Indexes

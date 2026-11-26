@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true">
+  <!--
+    Liquid-glass refraction filter. The same filter is inlined into every page
+    (tools/partials.mjs → svgDefs) because backdrop-filter:url() must reference
+    an in-document id. Used only in Chromium (see js/glass.js supportsRefraction).
+    Tune: `scale` 20–40 = refraction strength, baseFrequency = wobble size.
+  -->
+  <filter id="liquid-glass" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise"/>
+    <feGaussianBlur in="noise" stdDeviation="2" result="soft"/>
+    <feDisplacementMap in="SourceGraphic" in2="soft" scale="28" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>

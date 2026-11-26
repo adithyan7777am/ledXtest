@@ -1,0 +1,77 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/ai-integrated-digital-marketing-program/",
+      "destination": "/programs/ai-integrated-digital-marketing-program/",
+      "permanent": true
+    },
+    {
+      "source": "/advanced-certificate-in-seo-strategy-execution/",
+      "destination": "/programs/advanced-certificate-in-seo-strategy-execution/",
+      "permanent": true
+    },
+    {
+      "source": "/wordpress-development-certificate-program/",
+      "destination": "/programs/wordpress-development-certificate-program/",
+      "permanent": true
+    },
+    {
+      "source": "/leaf-digital-academy-digital-marketing-skills/",
+      "destination": "/blog/leaf-digital-academy-digital-marketing-skills/",
+      "permanent": true
+    },
+    {
+      "source": "/digital-marketing-easy-for-beginners/",
+      "destination": "/blog/digital-marketing-easy-for-beginners/",
+      "permanent": true
+    },
+    {
+      "source": "/qualifications-for-digital-marketing/",
+      "destination": "/blog/qualifications-for-digital-marketing/",
+      "permanent": true
+    },
+    {
+      "source": "/digital-marketing-tools-for-beginners-2/",
+      "destination": "/blog/career-opportunities-after-digital-marketing-course/",
+      "permanent": true
+    },
+    {
+      "source": "/digital-marketing-tools-for-beginners/",
+      "destination": "/blog/digital-marketing-tools-for-beginners/",
+      "permanent": true
+    },
+    {
+      "source": "/courses-after-pu-to-start-earning-early/",
+      "destination": "/blog/courses-after-pu-to-start-earning-early/",
+      "permanent": true
+    },
+    {
+      "source": "/why-digital-marketing-is-best-career-2026/",
+      "destination": "/blog/why-digital-marketing-is-best-career-2026/",
+      "permanent": true
+    },
+    {
+      "source": "/high-income-skills-after-pu/",
+      "destination": "/blog/high-income-skills-after-pu/",
+      "permanent": true
+    },
+    {
+      "source": "/traditional-degree-skill-course-mangalore/",
+      "destination": "/blog/traditional-degree-skill-course-mangalore/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(css|js|assets)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

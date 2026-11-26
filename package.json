@@ -1,0 +1,13 @@
+{
+  "name": "ledx-digital-academy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "LedxDigitalAcademy (LDA) website — static HTML + GSAP motion engine",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "serve": "node tools/serve.mjs",
+    "dev": "node tools/build.mjs && node tools/serve.mjs",
+    "dev:php": "node tools/build.mjs && php -S localhost:4322 tools/dev-router.php"
+  }
+}

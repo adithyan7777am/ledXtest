@@ -1,0 +1,71 @@
+/* =============================================================================
+   tokens.css — brand + theme + motion tokens
+   ============================================================================= */
+:root {
+  /* Brand */
+  --brand-violet:   #5E17EB;
+  --brand-violet-2: #7B3FF2;
+  --brand-plum:     #2A1155;
+  --brand-coral:    #FF6A3D;
+  --brand-ink:      #111111;
+  --brand-lavender: #EEE8FB;
+
+  /* Theme mapping */
+  --bg-primary:   #0B0714;
+  --bg-surface:   #140D24;
+  --bg-light:     var(--brand-lavender);
+  --text-primary: #F5F3FF;
+  --text-muted:   #A9A3BF;
+  --text-dark:    var(--brand-plum);
+  --text-dark-muted: #4F4170;            /* tinted from plum (≥ 4.5:1 on lavender) */
+  --accent:       var(--brand-violet);
+  --accent-text:  #9D6BFF;               /* violet lifted for ≥ 4.5:1 text on near-black */
+  --accent-2:     var(--brand-coral);
+  --border:       rgba(255,255,255,0.10);
+
+  /* Glass */
+  --glass-tint:       rgba(20, 13, 36, 0.45);
+  --glass-tint-solid: rgba(24, 16, 42, 0.92);
+  --glass-tint-light: rgba(255, 255, 255, 0.55);
+  --glass-border:     rgba(255, 255, 255, 0.14);
+  --glass-highlight:  rgba(255, 255, 255, 0.35);
+  --glass-blur:       18px;
+  --glass-saturate:   160%;
+  --glass-shadow:     0 20px 60px -20px rgba(94, 23, 235, .35);
+
+  /* Shape */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fs-display: clamp(2.75rem, 6vw, 5.5rem);
+  --fs-statement: clamp(1.75rem, 3.5vw, 3rem);
+  --fs-h3: clamp(1.25rem, 1.6vw, 1.5rem);
+  --fs-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+
+  /* Layout */
+  --container: 1240px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --section-y: clamp(64px, 8vw, 112px);
+  --nav-h: 72px;
+
+  /* Motion (Emil Kowalski curves) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-press: 140ms;
+  --dur-hover: 180ms;
+  --dur-ui: 260ms;
+
+  color-scheme: dark;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}

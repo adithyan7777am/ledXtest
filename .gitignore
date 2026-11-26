@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+Thumbs.db
+.claude/settings.local.json
+# brochure gate: never commit secrets or visitor data
+private/secret.key
+private/leads.csv
+private/state/
+private/outbox/

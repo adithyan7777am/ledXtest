@@ -1,0 +1,152 @@
+/* =============================================================================
+   glass.css — "Liquid Glass" system
+   .glass            dark frosted surface (default)
+   .glass--light     light frosted surface (lavender section)
+   .glass--strong    more opaque + blurrier (navbar scrolled, menus)
+   .glass--pill      pill radius
+   .glass--flat      tint + grain only, never backdrop-filter (for repeated items)
+   .glass--refract   opt-in SVG refraction (Chromium only, see glass.js)
+
+   Performance guard: backdrop-filter is only applied while an element carries
+   .glass-live — glass.js gives that class to the few small bars that float over
+   scrolling content (navbar, enroll bar, inline CTA). Cards use the plain tint.
+   ============================================================================= */
+
+.glass {
+  --_tint: var(--glass-tint);
+  --_blur: var(--glass-blur);
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  /* 5. Grain sits on top of the tint as a second background layer */
+  background:
+    url('/assets/img/noise.svg') repeat 0 0 / 160px 160px,
+    var(--_tint);
+  background-blend-mode: soft-light, normal;
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--glass-shadow);
+  transition: background-color var(--dur-ui) var(--ease-out);
+}
+.glass--pill   { border-radius: var(--radius-pill); }
+.glass--strong { --_tint: rgba(16, 10, 30, .72); --_blur: 26px; }
+.glass--light  {
+  --_tint: var(--glass-tint-light);
+  border-color: rgba(255,255,255,.7);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 20px 50px -24px rgba(42,17,85,.35);
+}
+.glass--flat { box-shadow: inset 0 1px 0 rgba(255,255,255,.12); }
+
+/* 1. Base frost — only while "live" (in viewport and under the budget) */
+.glass.glass-live:not(.glass--flat) {
+  -webkit-backdrop-filter: blur(var(--_blur)) saturate(var(--glass-saturate));
+          backdrop-filter: blur(var(--_blur)) saturate(var(--glass-saturate));
+}
+/* 2. Refraction — Chromium only; html.has-refraction is set by feature-detect */
+.has-refraction .glass--refract.glass-live {
+  backdrop-filter: url(#liquid-glass) blur(var(--_blur)) saturate(var(--glass-saturate));
+}
+
+/* 3. Specular cursor light (position driven by --mx/--my via gsap.quickTo) */
+.glass[data-specular]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, -40%),
+    rgba(255,255,255,.14), rgba(157,107,255,.08) 30%, transparent 60%);
+  opacity: var(--spec-o, 0);
+  transition: opacity var(--dur-ui) var(--ease-out);
+}
+.glass--light[data-specular]::before {
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, -40%), rgba(255,255,255,.75), transparent 60%);
+}
+
+/* 4. Chromatic edge — 1px violet → transparent → coral ring, rotates on hover */
+.glass[data-edge]::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  z-index: 2;
+  background: conic-gradient(from var(--angle),
+    var(--brand-violet-2), transparent 30%, transparent 55%, var(--brand-coral) 75%, var(--brand-violet-2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: .55;
+  transition: opacity var(--dur-ui) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .glass[data-edge]:hover::after { opacity: 1; animation: glass-spin 4s linear infinite; }
+}
+@keyframes glass-spin { to { --angle: 360deg; } }
+
+/* 7. Press state (scale handled by glass.js with an elastic release) */
+.glass.is-pressed { --_blur: 28px; }
+
+/* Content always sits above the pseudo layers (zero specificity, so any
+   component rule such as position:absolute still wins) */
+:where(.glass) > :where(*) { position: relative; z-index: 3; }
+
+/* 6. Ambient background orbs */
+.orbs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg-primary);
+}
+.orb {
+  position: absolute;
+  width: 62vmax;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  will-change: transform;
+}
+.orb--violet { left: -18vmax; top: -22vmax; background: radial-gradient(closest-side, rgba(94,23,235,.30), transparent); }
+.orb--plum   { right: -24vmax; top: 18vh;   background: radial-gradient(closest-side, rgba(110,40,190,.24), transparent); }
+.orb--coral  { left: 22vw; bottom: -34vmax; background: radial-gradient(closest-side, rgba(255,106,61,.20), transparent); }
+
+/* Slow ambient drift — CSS keyframes on transform, so it runs on the compositor and never touches the main
+   thread (it used to be three endless GSAP tweens plus a scroll-linked quickTo per orb). */
+@keyframes orb-drift-a { to { transform: translate3d(12vw, 10vh, 0); } }
+@keyframes orb-drift-b { to { transform: translate3d(-10vw, 14vh, 0); } }
+@keyframes orb-drift-c { to { transform: translate3d(8vw, -12vh, 0); } }
+.orb--violet { animation: orb-drift-a 24s ease-in-out infinite alternate; }
+.orb--plum   { animation: orb-drift-b 28s ease-in-out infinite alternate; }
+.orb--coral  { animation: orb-drift-c 21s ease-in-out infinite alternate; }
+
+/* Depth: each orb also slides against the page as it scrolls. Scroll-driven animation = compositor, no JS;
+   browsers without it simply keep the drift. */
+@keyframes orb-shift-a { to { translate: 0 60%; } }
+@keyframes orb-shift-b { to { translate: 0 -40%; } }
+@keyframes orb-shift-c { to { translate: 0 -70%; } }
+@supports (animation-timeline: scroll()) {
+  .orb--violet { animation: orb-drift-a 24s ease-in-out infinite alternate, orb-shift-a linear both; animation-timeline: auto, scroll(root); }
+  .orb--plum   { animation: orb-drift-b 28s ease-in-out infinite alternate, orb-shift-b linear both; animation-timeline: auto, scroll(root); }
+  .orb--coral  { animation: orb-drift-c 21s ease-in-out infinite alternate, orb-shift-c linear both; animation-timeline: auto, scroll(root); }
+}
+.tier-low .orb, .reduced-motion .orb { animation: none; will-change: auto; }
+@media (prefers-reduced-motion: reduce) { .orb { animation: none; will-change: auto; } }
+
+/* 8. Tier + motion fallbacks: solid tint, no blur, no refraction */
+.tier-low .glass,
+.reduced-motion .glass { --_tint: var(--glass-tint-solid); }
+.tier-low .glass--light,
+.reduced-motion .glass--light { --_tint: rgba(255,255,255,.85); }
+.tier-low .glass.glass-live,
+.reduced-motion .glass.glass-live {
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+}
+.tier-low .glass[data-specular]::before { display: none; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { --_tint: var(--glass-tint-solid); }
+}

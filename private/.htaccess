@@ -1,0 +1,10 @@
+# Nothing in this folder may ever be served directly: brochure PDFs, the signing key, the lead log.
+# They are only reachable through /api/brochure.php (which checks the visitor first).
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
+Options -Indexes
