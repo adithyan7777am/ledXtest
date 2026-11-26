@@ -126,7 +126,7 @@ ${preload}
   setTimeout(function () { if (!window.__ldaBooted) h.classList.add('engine-failed'); }, 5000);
 })(document);
 </script>
-${jsonld.length ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': jsonld })}</script>` : ''}
+${jsonld.length ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': jsonld }).replace(/</g, '\\u003c')}</script>` : ''}
 </head>`;
 
 /* ------------------------------------------------------- svg defs/filter -- */
@@ -272,6 +272,7 @@ export const leadForm = ({ id = 'enquire', title = C.form.title, subtitle = C.fo
       </div>
       <!-- Submits to {{FORM_ENDPOINT}} (config.integrations.formEndpoint); falls back to WhatsApp. -->
       <form class="form" data-form="${kind}" novalidate>
+        <p class="sr-only" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
         ${kind === 'hire' ? `
         <div class="field"><input class="field__input" id="${id}-company" name="company" type="text" autocomplete="organization" placeholder=" " required><label class="field__label" for="${id}-company">Company name</label></div>` : ''}
         ${kind === 'hire' ? '' : `<div class="field"><input class="field__input" id="${id}-name" name="name" type="text" autocomplete="name" placeholder=" " required><label class="field__label" for="${id}-name">Your name</label></div>`}

@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+// never print PHP errors to visitors (they are written to the server log instead)
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
 /**
  * Brochure gate — LedxDigitalAcademy
  *

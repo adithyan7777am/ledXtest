@@ -852,6 +852,7 @@ ul.placed-posters {
   scrollbar-width: none;
 }
 ul.placed-posters::-webkit-scrollbar { display: none; }
+.placed-cards + .placed-posters { margin-top: clamp(20px, 3vw, 32px); }
 .placed-poster {
   flex: 0 0 min(78%, 340px); scroll-snap-align: start; overflow: hidden; border-radius: 22px;
   background: #fff; border: 1px solid var(--border); box-shadow: 0 24px 50px -30px rgba(94, 23, 235, .55);

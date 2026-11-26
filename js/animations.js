@@ -638,7 +638,19 @@ export function initTestimonials(ctx) {
     on(v, 'timeupdate', () => { bar.style.transform = `scaleX(${v.duration ? v.currentTime / v.duration : 0})`; });
     on(v, 'play', () => { stopOthers(v); sync(); });
     on(v, 'pause', sync);
-    on(card, 'click', () => { if (v.paused) { v.preload = 'auto'; v.play().catch(() => {}); } else v.pause(); });
+    const start = () => {
+      v.preload = 'auto';
+      v.play().catch(() => { v.muted = true; v.play().catch(() => {}); }); // browsers may block sound until the first click: fall back to muted
+    };
+    // Mouse: hover plays, leaving pauses (and it resumes where it stopped). Touch: tap to play / pause.
+    if (isFine()) {
+      on(card, 'pointerenter', start);
+      on(card, 'pointerleave', () => v.pause());
+    }
+    on(card, 'click', () => {
+      if (v.muted && !v.paused) { v.muted = false; return; }   // first click after a muted hover start: turn the sound on
+      if (v.paused) start(); else v.pause();
+    });
   });
   // pause when scrolled out of view
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) e.target.pause(); }), { threshold: 0.1 });
@@ -694,6 +706,7 @@ export function initForm({ el, gsap, on, reduced }) {
     gsap.from(fields, { y: 20, opacity: 0, duration: 0.8, stagger: 0.06, ease: 'expo.out', scrollTrigger: { trigger: form, start: 'top 85%', once: true } });
   }
 
+  const openedAt = performance.now(); // the server rejects forms sent faster than a person could fill them
   const endpoint = CONFIG.integrations.formEndpoint;
   const hasEndpoint = endpoint && !/\{\{/.test(endpoint);
 
@@ -726,9 +739,9 @@ export function initForm({ el, gsap, on, reduced }) {
       return;
     }
     const fd = new FormData(form);
-    const data = Object.fromEntries(fd.entries());
-    data.phone = `${data.countryCode || ''} ${data.phone || ''}`.trim();
-    delete data.countryCode;
+    const raw = Object.fromEntries(fd.entries());
+    const data = { ...raw, phone: `${raw.countryCode || ''} ${raw.phone || ''}`.trim() };
+    delete data.countryCode; delete data.website;
     data.page = location.pathname;
 
     if (!hasEndpoint) { // {{FORM_ENDPOINT}} not set yet → WhatsApp fallback (keeps the click's user gesture)
@@ -739,7 +752,12 @@ export function initForm({ el, gsap, on, reduced }) {
     setState('loading');
     status.textContent = 'Sending…';
     try {
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...raw, kind: form.dataset.form || 'lead', page: location.pathname, elapsed: Math.round(performance.now() - openedAt) }) });
+      if (res.status === 422 || res.status === 429) { // the server explains what to fix
+        const j = await res.json().catch(() => ({}));
+        setState('idle'); status.classList.add('is-error'); status.textContent = j.message || 'Please check your details and try again.';
+        return;
+      }
       if (!res.ok) throw new Error(res.status);
       success('Thanks! A mentor will call you within one working day.');
     } catch {

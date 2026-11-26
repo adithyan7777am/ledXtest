@@ -3,6 +3,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { join, extname, normalize, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { HEADERS } from './security.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT) || 4321;
@@ -25,7 +26,7 @@ createServer(async (req, res) => {
       s = await stat(file).catch(() => null);
     }
     if (!s) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('404 Not Found'); }
-    res.writeHead(200, { 'Content-Type': TYPES[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+    res.writeHead(200, { 'Content-Type': TYPES[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache', ...HEADERS });
     res.end(await readFile(file));
   } catch {
     res.writeHead(500); res.end('Server error');

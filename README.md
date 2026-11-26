@@ -100,7 +100,9 @@ tools/dev-router.php                      local testing only:  npm run dev:php  
 3. The signing key is created automatically on the first request; the folder must be writable by PHP (it is by default).
 4. Lead e-mails use PHP `mail()` from `noreply@<your domain>`. After deploying, submit the form once yourself and check the **inbox and spam folder** of ledxdigitalacademy@gmail.com; mark it "not spam" once.
 5. Check that `https://your-domain/private/brochures/ai-integrated-digital-marketing-program.pdf` returns **403/404** — if it downloads, the protection is not active, so do step 2 immediately.
-6. Leads are also saved in `private/leads.csv` (download it from File Manager). It contains personal data: keep it private.
+6. The enquiry and "Hire from us" forms post to `api/lead.php` (same PHP rules, e-mailed to the same Gmail, copy in `private/enquiries.csv`). Test both forms once after deploying. If PHP is unavailable the forms fall back to WhatsApp.
+7. In hPanel turn on **Force HTTPS** (SSL) for the domain. `.htaccess` also redirects HTTP → HTTPS and www → non-www, adds the security headers (CSP, X-Frame-Options, HSTS…) and blocks `private/`, `tools/`, dotfiles and `*.mjs`. If you add a new external script, font, image host, iframe or form service, allow it in `tools/security.mjs` and rebuild, or the browser will block it.
+8. Leads are also saved in `private/leads.csv` (download it from File Manager). It contains personal data: keep it private.
 
 This gate needs a PHP host. It does nothing on Netlify/Vercel static hosting.
 

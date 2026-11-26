@@ -2,7 +2,7 @@
    pages-home.mjs — Home page sections (6.1 → 6.12). Content comes from config.
    ============================================================================= */
 import { CONFIG as C } from '../js/config.js';
-import { esc, icon, btn, initials, leadForm, statRow } from './partials.mjs';
+import { esc, icon, btn, initials, leadForm, statRow, isPlaceholder } from './partials.mjs';
 
 /* Shared: program card (used on home + program pages) */
 export const programCard = (p, tag = 'h3') => {
@@ -68,10 +68,10 @@ export const placementCards = (students) => `
 </ul>`;
 
 /* "Got Placed" announcement posters: a swipeable row on phones/tablets, a grid on desktop. */
-export const placementPosters = (posters) => `
+export const placementPosters = (posters, lightbox = 'posters') => `
 <ul class="placed-posters" role="list">
   ${posters.map((p) => `
-  <li class="placed-poster"><button type="button" class="lb-trigger" data-lightbox="posters" data-cursor="View" aria-label="View larger: ${esc(p.name)}, placed as ${esc(p.role)} at ${esc(p.company)}"><img src="${p.src}" alt="${esc(p.name)}, placed as ${esc(p.role)} at ${esc(p.company)}, ${esc(p.location)}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></button></li>`).join('')}
+  <li class="placed-poster"><button type="button" class="lb-trigger" data-lightbox="${esc(lightbox)}" data-cursor="View" aria-label="View larger: ${esc(p.name)}, placed as ${esc(p.role)} at ${esc(p.company)}"><img src="${p.src}" alt="${esc(p.name)}, placed as ${esc(p.role)} at ${esc(p.company)}, ${esc(p.location)}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></button></li>`).join('')}
 </ul>`;
 
 /* Home: "Unmatched Placements" — stats strip + the placement cards. */
@@ -203,15 +203,30 @@ export const founderSection = () => `
   <div class="container">
     <div class="founder__card glass" data-specular>
       <figure class="founder__photo" data-wipe>
-        ${C.founder.photo ? `<img src="${C.founder.photo}" alt="${esc(C.founder.name)}" width="640" height="760" loading="lazy">` : `<div class="ph" role="img" aria-label="Founder photo placeholder"><span>{{FOUNDER_PHOTO}}</span></div>`}
+        ${C.founder.photo ? `<img src="${C.founder.photo}" alt="${esc(C.founder.name)}" width="640" height="760" loading="lazy">` : `<div class="ph" role="img" aria-label="${esc(C.founder.name)}"><span>${esc(initials(C.founder.name))}</span></div>`}
       </figure>
       <div class="founder__copy">
         <p class="eyebrow">From the founder</p>
         <h2 class="h2" id="founder-title" data-split="lines">${esc(C.founder.name)}</h2>
         <p class="founder__role">${esc(C.founder.title)}</p>
-        <p class="founder__msg">${esc(C.founder.message)}</p>
+        <p class="founder__msg">${esc(isPlaceholder(C.founder.message) ? (C.mentors.find((m) => m.name === C.founder.name)?.bio || '') : C.founder.message)}</p>
         ${btn({ label: 'Talk to me', href: C.contact.whatsapp, iconName: 'whatsapp', attrs: 'target="_blank" rel="noopener"' })}
       </div>
+    </div>
+  </div>
+</section>`;
+
+/* "Tools That You Will Master" logo grid (digital marketing program page). */
+export const toolsSection = () => `
+<!-- ======================== 6.7 TOOLS YOU WILL MASTER =================== -->
+<section class="section tools" data-module="tools" aria-labelledby="tools-title">
+  <div class="tools__panel">
+    <div class="container">
+      <h2 class="h2 h2--dark center" id="tools-title" data-split="lines">Tools That You <em class="accent">Will Master</em></h2>
+      <ul class="tools__grid" role="list">
+        ${C.toolShowcase.map(toolTile).join('')}
+      </ul>
+      <p class="tools__more">And many more tools across SEO, content, analytics, automation and e-commerce.</p>
     </div>
   </div>
 </section>`;
@@ -303,19 +318,6 @@ export const homeBody = () => {
   </div>
 </section>
 
-<!-- ======================== 6.7 TOOLS YOU WILL MASTER =================== -->
-<section class="section tools" data-module="tools" aria-labelledby="tools-title">
-  <div class="tools__panel">
-    <div class="container">
-      <h2 class="h2 h2--dark center" id="tools-title" data-split="lines">Tools That You <em class="accent">Will Master</em></h2>
-      <ul class="tools__grid" role="list">
-        ${C.toolShowcase.slice(0, 18).map(toolTile).join('')}
-      </ul>
-      <p class="tools__more">And many more tools across SEO, content, analytics, automation and e-commerce.</p>
-    </div>
-  </div>
-</section>
-
 <!-- ========================= 6.8 WHY CHOOSE LDA ======================== -->
 <section class="section why" data-module="why" aria-labelledby="why-title">
   <div class="why__statement">
@@ -360,6 +362,8 @@ ${placementsSection()}
     </ul>
   </div>
 </section>
+
+${lifeSection()}
 
 <!-- =============================== 6.10 FAQ ============================= -->
 <section class="section faq" id="faq" data-module="faq" aria-labelledby="faq-title">

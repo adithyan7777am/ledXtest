@@ -7,3 +7,6 @@ private/secret.key
 private/leads.csv
 private/state/
 private/outbox/
+# the brochure PDFs are only for the live server — keep them out of the (public) repository
+private/brochures/*.pdf
+private/enquiries.csv

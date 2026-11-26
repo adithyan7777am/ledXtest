@@ -2,8 +2,8 @@
    pages-inner.mjs — About, Placements, Program, Blogs, Blog post
    ============================================================================= */
 import { CONFIG as C } from '../js/config.js';
-import { esc, icon, btn, initials, leadForm, breadcrumbs, statRow, brochureDialog } from './partials.mjs';
-import { programCard, faqList, placementCards, placementPosters, lifeSection, founderSection } from './pages-home.mjs';
+import { esc, icon, btn, initials, leadForm, breadcrumbs, statRow, brochureDialog, isPlaceholder } from './partials.mjs';
+import { programCard, faqList, placementCards, placementPosters, lifeSection, founderSection, toolsSection } from './pages-home.mjs';
 
 const pageHero = ({ crumbs, eyebrow = '', title, accent = '', lead = '', extra = '' }) => `
 <section class="page-hero" data-module="pagehero" data-eager>
@@ -39,8 +39,8 @@ ${pageHero({
   <div class="container">
     <h2 class="h2" id="mission-title" data-split="lines">Mission <em class="accent">&amp; vision</em></h2>
     <div class="split-cards">
-      <article class="glass split-card" data-specular data-edge><h3>Our mission</h3><p>{{MISSION}} — Make every learner job-ready and client-ready through live projects, AI tools and mentorship.</p></article>
-      <article class="glass split-card" data-specular data-edge><h3>Our vision</h3><p>{{VISION}} — Build the region’s strongest community of AI-skilled digital marketers, freelancers and founders.</p></article>
+      <article class="glass split-card" data-specular data-edge><h3>Our mission</h3><p>Make every learner job-ready and client-ready through live projects, AI tools and mentorship.</p></article>
+      <article class="glass split-card" data-specular data-edge><h3>Our vision</h3><p>Build the region’s strongest community of AI-skilled digital marketers, freelancers and founders.</p></article>
     </div>
   </div>
 </section>
@@ -62,7 +62,7 @@ ${pageHero({
     <div class="timeline">
       <span class="timeline__line" aria-hidden="true"><i></i></span>
       <ol class="timeline__list" role="list">
-        ${C.timeline.map((t) => `<li class="timeline__item"><span class="timeline__dot" aria-hidden="true"></span><p class="timeline__year">${esc(t.year)}</p><h3>${esc(t.title)}</h3><p>${esc(t.body)}</p></li>`).join('')}
+        ${C.timeline.map((t) => `<li class="timeline__item"><span class="timeline__dot" aria-hidden="true"></span>${isPlaceholder(t.year) ? '' : `<p class="timeline__year">${esc(t.year)}</p>`}<h3>${esc(t.title)}</h3><p>${esc(t.body)}</p></li>`).join('')}
       </ol>
     </div>
   </div>
@@ -129,14 +129,9 @@ ${pageHero({
         <p class="placed__co">${s.logo ? `<img src="${s.logo}" alt="${esc(s.company)}" width="96" height="28" loading="lazy">` : esc(s.company)}</p>
       </li>`).join('')}
     </ul>`}
+    ${C.placements.posters?.length ? placementPosters(C.placements.posters, 'placements') : ''}
   </div>
 </section>
-${C.placements.posters?.length ? `<section class="section section--tight" data-module="programs" aria-labelledby="posters-title">
-  <div class="container">
-    <h2 class="h2" id="posters-title" data-split="lines">Officially <em class="accent">placed</em></h2>
-    ${placementPosters(C.placements.posters)}
-  </div>
-</section>` : ''}
 ${leadForm({ id: 'hire', title: 'Hire from us', subtitle: 'Hire job-ready digital marketers trained on live client projects. Tell us what you need and we will share matching profiles.', kind: 'hire' })}`;
 
 /* ---------------------------------------------------------------- PROGRAM -- */
@@ -179,12 +174,12 @@ ${p.audience ? `<section class="section section--tight" aria-labelledby="aud-tit
     ${faqList(p.modules.map((m, i) => ({ q: `${p.moduleLabel || 'Module'} ${i + 1} — ${m.title}`, body: m.body })), 'mod')}
   </div>
 </section>
-<section class="section section--tight" aria-labelledby="ptools-title">
+${p.featured ? toolsSection() : `<section class="section section--tight" aria-labelledby="ptools-title">
   <div class="container">
     <h2 class="h2" id="ptools-title" data-split="lines">Tools you’ll <em class="accent">use</em></h2>
     <ul class="chip-cloud" role="list">${toolsFor(p).map((n) => `<li class="tool-pill glass glass--flat glass--pill"><b>${initials(n)}</b>${esc(n)}</li>`).join('')}</ul>
   </div>
-</section>
+</section>`}
 ${p.journey ? `<section class="section timeline-section" data-module="timeline" aria-labelledby="journey-title">
   <div class="container container--narrow">
     <h2 class="h2" id="journey-title" data-split="lines">Your journey to becoming a <em class="accent">certified digital marketer</em></h2>
@@ -206,8 +201,8 @@ ${p.journey ? `<section class="section timeline-section" data-module="timeline" 
     </article>
     <article class="glass split-card" data-specular data-edge>
       <h2 class="h3">Fees &amp; batches</h2>
-      <p class="fee"><span class="fee__label">Program fee</span><b>${esc(p.fee)}</b></p><!-- {{FEE}} -->
-      <p class="fee"><span class="fee__label">Next batches</span><b>${esc(p.batches)}</b></p><!-- {{BATCHES}} -->
+      <p class="fee"><span class="fee__label">Program fee</span><b>${isPlaceholder(p.fee) ? 'Contact us' : esc(p.fee)}</b></p><!-- {{FEE}} -->
+      <p class="fee"><span class="fee__label">Next batches</span><b>${isPlaceholder(p.batches) ? 'Contact us for upcoming batches' : esc(p.batches)}</b></p><!-- {{BATCHES}} -->
       <ul class="chip-cloud" role="list">${(p.learningModes || C.modes.map((m) => m.title)).map((m) => `<li class="meta-chip glass glass--flat glass--pill">${esc(m)}</li>`).join('')}</ul>
     </article>
   </div>

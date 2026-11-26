@@ -46,7 +46,7 @@ export const CONFIG = {
       country: 'IN',
     }, // {{ADDRESS_MANGALORE}} — confirm after rebrand
     mapEmbed: 'https://maps.google.com/maps?q=Srinidhi%20Complex%2C%20Pumpwell%2C%20Mangaluru%20575002&output=embed',
-    mapLink: 'https://maps.google.com/?q=Srinidhi+Complex+Pumpwell+Mangaluru+575002',
+    mapLink: 'https://maps.app.goo.gl/NT1kZrDJPQkzEF3N6',
   },
 
   /* Update handles after the rebrand ({{NEW_INSTAGRAM}} etc.) */
@@ -59,7 +59,7 @@ export const CONFIG = {
 
   integrations: {
     chatbotEmbed: '', // {{CHATBOT_EMBED}} — paste the "Livi" chatbot <script> snippet here
-    formEndpoint: '{{FORM_ENDPOINT}}', // e.g. Formspree / Google Apps Script URL. While a placeholder, forms fall back to WhatsApp.
+    formEndpoint: '/api/lead.php', // e-mails every enquiry to ledxdigitalacademy@gmail.com (needs PHP, i.e. the Hostinger site). If this is empty or a {{placeholder}}, forms fall back to WhatsApp.
   },
 
   /* Mouse cursor (desktop only). style: 'comet' (small glowing trail, sparks on click) | 'block' (the logo's violet block) |
